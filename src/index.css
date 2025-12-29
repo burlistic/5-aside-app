@@ -1,0 +1,221 @@
+:root {
+  --bg-color: #0f172a; /* Slate 900 */
+  --card-bg: #1e293b; /* Slate 800 */
+  --text-primary: #f8fafc; /* Slate 50 */
+  --text-secondary: #94a3b8; /* Slate 400 */
+  --accent-gk: #3b82f6; /* Blue 500 */
+  --accent-field: #10b981; /* Emerald 500 */
+  --accent-timer: #f59e0b; /* Amber 500 */
+  --danger: #ef4444; /* Red 500 */
+  --success: #22c55e;
+  
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.5;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+h1, h2, h3 {
+  margin: 0 0 1rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+button.primary {
+  background-color: var(--accent-field);
+  color: #000;
+}
+
+button.secondary {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--text-secondary);
+}
+
+button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+input {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--text-secondary);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.player-item {
+    background: var(--card-bg);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    margin-bottom: 1rem;
+}
+
+/* Game Screen */
+.timer-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.timer {
+    font-size: 4rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.pitch {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+    border: 2px solid #10b981;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Field Markings */
+.pitch::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+}
+.pitch::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.field-player {
+    background: var(--card-bg);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 10;
+    border-left: 4px solid transparent;
+}
+
+.field-player.gk {
+    border-left-color: var(--accent-gk);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.field-player.outfield {
+    border-left-color: var(--accent-field);
+}
+
+.bench-section {
+    margin-top: 1rem;
+    opacity: 0.8;
+}
+
+.bench-player {
+    padding: 0.5rem;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+}
+
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge.gk { background: var(--accent-gk); color: #fff; }
+.badge.outfield { background: var(--accent-field); color: #000; }
+.badge-bench { background: #334155; color: #94a3b8; }
+
+.status-bar {
+    background: var(--accent-timer);
+    color: #000; /** Black text for contrast on yellow */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.setup-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
