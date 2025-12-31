@@ -9,7 +9,7 @@ export default function GameScreen({ players, onReset }) {
     const [isPlaying, setIsPlaying] = useState(false);
 
 
-    const schedule = useMemo(() => calculateSchedule(players, 40), [players]);
+    const schedule = useMemo(() => calculateSchedule(players, totalTimeInMinutes), [players, totalTimeInMinutes]);
 
     useEffect(() => {
         let interval;
