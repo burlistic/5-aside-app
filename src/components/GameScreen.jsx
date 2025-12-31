@@ -90,7 +90,7 @@ export default function GameScreen({ players, onReset }) {
                 ))}
             </div>
 
-            {bench.length > 0 && (
+            {bench.length > 0 ? (
                 <div className="card bench-section">
                     <h3 style={{ fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
                         Bench / Next In
@@ -106,6 +106,22 @@ export default function GameScreen({ players, onReset }) {
                                 )}
                             </div>
                         ))}
+                    </div>
+                </div>
+            ) : (
+                <div className="card bench-section">
+                    <h3 style={{ fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
+                        Next Rotation
+                    </h3>
+                    <div style={{ padding: '0.5rem', color: 'var(--text-secondary)' }}>
+                        {nextShift ? (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span>Next GK: <strong style={{ color: 'var(--text-primary)' }}>{players.find(p => nextShift.assignments[p.id] === 'GK')?.name}</strong></span>
+                                <span style={{ fontSize: '0.875rem', color: 'var(--accent-timer)' }}>in {formatTime(timeUntilNextShift)}</span>
+                            </div>
+                        ) : (
+                            <span>No more rotations</span>
+                        )}
                     </div>
                 </div>
             )}
