@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 export default function PlayerSetup({ onStartGame }) {
     const [players, setPlayers] = useState([]);
     const [name, setName] = useState('');
     const [error, setError] = useState('');
+    const inputRef = useRef(null);
 
     const addPlayer = (e) => {
         e.preventDefault();
@@ -21,6 +22,7 @@ export default function PlayerSetup({ onStartGame }) {
         setPlayers([...players, { id: crypto.randomUUID(), name: trimmed }]);
         setName('');
         setError('');
+        inputRef.current?.focus();
     };
 
     const removePlayer = (id) => {
@@ -46,6 +48,7 @@ export default function PlayerSetup({ onStartGame }) {
                 <form onSubmit={addPlayer}>
                     <div className="input-group">
                         <input
+                            ref={inputRef}
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
