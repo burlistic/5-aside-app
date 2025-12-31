@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { calculateSchedule, formatTime } from '../utils/rotation';
 
-export default function GameScreen({ players, onReset }) {
+export default function GameScreen({ players, onReset, onNextMatch }) {
     // Game state
-    const totalTimeInMinutes = 5;
+    const totalTimeInMinutes = 1;
     const totalTimeInSeconds = totalTimeInMinutes * 60;
     const [timeRemaining, setTimeRemaining] = useState(totalTimeInSeconds); // 40 minutes in seconds
     const [isPlaying, setIsPlaying] = useState(false);
@@ -55,13 +55,24 @@ export default function GameScreen({ players, onReset }) {
                 <div className="timer" style={{ color: timeRemaining < 60 ? 'var(--danger)' : 'inherit' }}>
                     {formatTime(timeRemaining)}
                 </div>
-                <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                    <button
-                        className={isPlaying ? "secondary" : "primary"}
-                        onClick={() => setIsPlaying(!isPlaying)}
-                    >
-                        {isPlaying ? "Pause" : (timeRemaining < totalTimeInSeconds ? "Resume" : "Start Game")}
-                    </button>
+                <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    {timeRemaining === 0 ? (
+                        <button
+                            className="primary"
+                            onClick={onNextMatch}
+                            style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', color: '#fff' }}
+                        >
+                            Next Match &rarr;
+                        </button>
+                    ) : (
+                        <button
+                            className={isPlaying ? "secondary" : "primary"}
+                            onClick={() => setIsPlaying(!isPlaying)}
+                        >
+                            {isPlaying ? "Pause" : (timeRemaining < totalTimeInSeconds ? "Resume" : "Start Game")}
+                        </button>
+                    )}
+
                     <button className="secondary" onClick={onReset}>
                         Reset
                     </button>

@@ -1,10 +1,16 @@
 import React, { useState, useRef } from 'react';
 
-export default function PlayerSetup({ onStartGame }) {
-    const [players, setPlayers] = useState([]);
+export default function PlayerSetup({ onStartGame, initialPlayers = [] }) {
+    console.log("PlayerSetup rendered. initialPlayers:", initialPlayers);
+    const [players, setPlayers] = useState(initialPlayers);
     const [name, setName] = useState('');
     const [error, setError] = useState('');
     const inputRef = useRef(null);
+
+    React.useEffect(() => {
+        console.log("PlayerSetup useEffect: updating players", initialPlayers);
+        setPlayers(initialPlayers);
+    }, [initialPlayers]);
 
     const addPlayer = (e) => {
         e.preventDefault();

@@ -18,6 +18,18 @@ function App() {
     }
   };
 
+  const handleNextMatch = () => {
+    console.log("handleNextMatch: Current players", players);
+    if (players.length > 0) {
+      // Rotate: Shift everyone up one seat.
+      // Old Seat 0 (GK) -> goes to end (last Seat).
+      const rotated = [...players.slice(1), players[0]];
+      console.log("handleNextMatch: Rotated players", rotated);
+      setPlayers(rotated);
+    }
+    setGameStarted(false);
+  };
+
   return (
     <div>
       <header style={{ marginBottom: '2rem', textAlign: 'center' }}>
@@ -28,9 +40,9 @@ function App() {
 
       <main>
         {!gameStarted ? (
-          <PlayerSetup onStartGame={handleStartGame} />
+          <PlayerSetup onStartGame={handleStartGame} initialPlayers={players} />
         ) : (
-          <GameScreen players={players} onReset={handleReset} />
+          <GameScreen players={players} onReset={handleReset} onNextMatch={handleNextMatch} />
         )}
       </main>
     </div>
