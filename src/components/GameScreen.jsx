@@ -3,9 +3,11 @@ import { calculateSchedule, formatTime } from '../utils/rotation';
 
 export default function GameScreen({ players, onReset }) {
     // Game state
-    const [timeRemaining, setTimeRemaining] = useState(40 * 60); // 40 minutes in seconds
+    const totalTimeInMinutes = 5;
+    const totalTimeInSeconds = totalTimeInMinutes * 60;
+    const [timeRemaining, setTimeRemaining] = useState(totalTimeInSeconds); // 40 minutes in seconds
     const [isPlaying, setIsPlaying] = useState(false);
-    const totalTime = 40 * 60;
+
 
     const schedule = useMemo(() => calculateSchedule(players, 40), [players]);
 
@@ -22,7 +24,7 @@ export default function GameScreen({ players, onReset }) {
     }, [isPlaying, timeRemaining]);
 
     // Current Shift Logic
-    const timeElapsed = totalTime - timeRemaining;
+    const timeElapsed = totalTimeInSeconds - timeRemaining;
 
     // Find current shift based on elapsed time
     // Note: Shifts are [start, end).
@@ -58,7 +60,7 @@ export default function GameScreen({ players, onReset }) {
                         className={isPlaying ? "secondary" : "primary"}
                         onClick={() => setIsPlaying(!isPlaying)}
                     >
-                        {isPlaying ? "Pause" : (timeRemaining < totalTime ? "Resume" : "Start Game")}
+                        {isPlaying ? "Pause" : (timeRemaining < totalTimeInSeconds ? "Resume" : "Start Game")}
                     </button>
                     <button className="secondary" onClick={onReset}>
                         Reset
