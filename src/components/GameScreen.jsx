@@ -3,7 +3,7 @@ import { calculateSchedule, formatTime } from '../utils/rotation';
 
 export default function GameScreen({ players, onReset, onNextMatch }) {
     // Game state
-    const totalTimeInMinutes = 1;
+    const totalTimeInMinutes = 36;
     const totalTimeInSeconds = totalTimeInMinutes * 60;
     const [timeRemaining, setTimeRemaining] = useState(totalTimeInSeconds); // 40 minutes in seconds
     const [isPlaying, setIsPlaying] = useState(false);
