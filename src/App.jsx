@@ -3,8 +3,15 @@ import PlayerSetup from './components/PlayerSetup';
 import GameScreen from './components/GameScreen';
 
 function App() {
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState(() => {
+    const saved = localStorage.getItem('fiveAsideTeam');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [gameStarted, setGameStarted] = useState(false);
+
+  React.useEffect(() => {
+    localStorage.setItem('fiveAsideTeam', JSON.stringify(players));
+  }, [players]);
 
   const handleStartGame = (playerList) => {
     setPlayers(playerList);
@@ -14,7 +21,7 @@ function App() {
   const handleReset = () => {
     if (window.confirm("End current game and reset?")) {
       setGameStarted(false);
-      setPlayers([]);
+      // We keep the players in state/storage so they can be reused for next match
     }
   };
 
