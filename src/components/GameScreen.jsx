@@ -3,7 +3,8 @@ import { calculateSchedule, formatTime } from '../utils/rotation';
 
 export default function GameScreen({ players, onReset, onNextMatch }) {
     // Game state
-    const totalTimeInMinutes = 1; // 18 min halves
+    const urlParams = new URLSearchParams(window.location.search);
+    const totalTimeInMinutes = parseInt(urlParams.get('time')) || 18; // Default to 18 min if not specified
     const totalTimeInSeconds = totalTimeInMinutes * 60;
     const halfTimeDurationSeconds = 10; // 2 minutes
 
