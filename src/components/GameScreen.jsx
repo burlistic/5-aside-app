@@ -157,9 +157,9 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
                         {isSubstitutionSoon && nextShift && nextShift.assignments[gk.id] !== 'GK' && (
                             <div className={`status-badge ${nextShift.assignments[gk.id] === 'Bench' ? 'sub-out' : 'rotation'}`}>
                                 {nextShift.assignments[gk.id] === 'Bench' ? (
-                                    <><span>↓</span> BENCH</>
+                                    <><span>↓</span> BENCH Next</>
                                 ) : (
-                                    <><span>🔄</span> {nextShift.assignments[gk.id]}</>
+                                    <><span>⬇️</span> {nextShift.assignments[gk.id]} Next</>
                                 )}
                             </div>
                         )}
@@ -175,7 +175,7 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
                         {isSubstitutionSoon && nextShift && nextShift.assignments[p.id] !== 'Outfield' && (
                             <div className={`status-badge ${nextShift.assignments[p.id] === 'Bench' ? 'sub-out' : 'rotation'}`}>
                                 {nextShift.assignments[p.id] === 'Bench' ? (
-                                    <><span>↓</span> BENCH</>
+                                    <><span>↓</span> BENCH Next</>
                                 ) : (
                                     <><span>🔄</span> {nextShift.assignments[p.id]}</>
                                 )}
