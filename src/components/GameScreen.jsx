@@ -157,9 +157,9 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
                         {isSubstitutionSoon && nextShift && nextShift.assignments[gk.id] !== 'GK' && (
                             <div className={`status-badge ${nextShift.assignments[gk.id] === 'Bench' ? 'sub-out' : 'rotation'}`}>
                                 {nextShift.assignments[gk.id] === 'Bench' ? (
-                                    <><span>↓</span> BENCH Next</>
+                                    <><span>↓</span> BENCH at {totalTimeInMinutes === 1 ? `${totalTimeInSeconds - nextShift.startTime}s` : formatTime(totalTimeInSeconds - nextShift.startTime)}</>
                                 ) : (
-                                    <><span>⬇️</span> {nextShift.assignments[gk.id]} Next</>
+                                    <><span>⬇️</span> {nextShift.assignments[gk.id]} at {totalTimeInMinutes === 1 ? `${totalTimeInSeconds - nextShift.startTime}s` : formatTime(totalTimeInSeconds - nextShift.startTime)}</>
                                 )}
                             </div>
                         )}
@@ -175,9 +175,9 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
                         {isSubstitutionSoon && nextShift && nextShift.assignments[p.id] !== 'Outfield' && (
                             <div className={`status-badge ${nextShift.assignments[p.id] === 'Bench' ? 'sub-out' : 'rotation'}`}>
                                 {nextShift.assignments[p.id] === 'Bench' ? (
-                                    <><span>↓</span> BENCH Next</>
+                                    <><span>↓</span> BENCH at {totalTimeInMinutes === 1 ? `${totalTimeInSeconds - nextShift.startTime}s` : formatTime(totalTimeInSeconds - nextShift.startTime)}</>
                                 ) : (
-                                    <><span>🔄</span> {nextShift.assignments[p.id]}</>
+                                    <><span>🔄</span> {nextShift.assignments[p.id]} at {totalTimeInMinutes === 1 ? `${totalTimeInSeconds - nextShift.startTime}s` : formatTime(totalTimeInSeconds - nextShift.startTime)}</>
                                 )}
                             </div>
                         )}
@@ -203,7 +203,9 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
                                         <span style={{ fontWeight: '500' }}>{p.name}</span>
                                         {nextEntryShift && !isEnteringNext && (
                                             <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
-                                                Enters in {Math.round(timeToWait / 60)}m ({formatTime(timeToWait)})
+                                                Enters at {totalTimeInMinutes === 1 ?
+                                                    `${totalTimeInSeconds - nextEntryShift.startTime}s` :
+                                                    formatTime(totalTimeInSeconds - nextEntryShift.startTime)}
                                             </span>
                                         )}
                                     </div>
@@ -211,9 +213,9 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
                                         <div className={`status-badge ${isEnteringNext ? 'sub-in' : ''}`} style={{ border: isEnteringNext ? '' : '1px solid #334155', background: isEnteringNext ? '' : 'rgba(51, 65, 85, 0.3)', color: isEnteringNext ? '' : 'var(--text-secondary)' }}>
                                             {isEnteringNext ? (
                                                 isSubstitutionSoon ? (
-                                                    <>{nextShift.assignments[p.id] === 'GK' ? '🧤' : '🏃'} NEXT {nextShift.assignments[p.id].toUpperCase()}</>
+                                                    <>{nextShift.assignments[p.id] === 'GK' ? '🧤' : '🏃'} NEXT {nextShift.assignments[p.id].toUpperCase()} at {totalTimeInMinutes === 1 ? `${totalTimeInSeconds - nextShift.startTime}s` : formatTime(totalTimeInSeconds - nextShift.startTime)}</>
                                                 ) : (
-                                                    <>NEXT IN: {formatTime(timeUntilNextShift)}</>
+                                                    <>Enters at {totalTimeInMinutes === 1 ? `${totalTimeInSeconds - nextShift.startTime}s` : formatTime(totalTimeInSeconds - nextShift.startTime)}</>
                                                 )
                                             ) : (
                                                 <>WAITING</>
@@ -238,7 +240,7 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
                                     isSubstitutionSoon ? (
                                         <div className="status-badge sub-in">↑ GK</div>
                                     ) : (
-                                        <span style={{ fontSize: '0.875rem', color: 'var(--accent-timer)' }}>in {formatTime(timeUntilNextShift)}</span>
+                                        <span style={{ fontSize: '0.875rem', color: 'var(--accent-timer)' }}>Enters at {totalTimeInMinutes === 1 ? `${totalTimeInSeconds - nextShift.startTime}s` : formatTime(totalTimeInSeconds - nextShift.startTime)}</span>
                                     )
                                 )}
                             </div>
