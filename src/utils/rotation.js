@@ -5,10 +5,11 @@
  * @param {number} totalTimeMinutes - Total game duration (default 40).
  * @returns {Array} List of shifts.
  */
-export function calculateSchedule(players, totalTimeMinutes = 40) {
+export function calculateSchedule(players, totalTimeMinutes = 40, excludeGK = false) {
     const playerCount = players.length;
-    if (playerCount < 5) {
-        throw new Error("Minimum 5 players required");
+    const minPlayers = excludeGK ? 4 : 5;
+    if (playerCount < minPlayers) {
+        throw new Error(`Minimum ${minPlayers} players required${excludeGK ? " for outfield" : ""}`);
     }
 
     // Convert to seconds for better precision
@@ -53,10 +54,18 @@ export function calculateSchedule(players, totalTimeMinutes = 40) {
             const seat = (index + offset) % playerCount;
 
             let role = 'Bench';
-            if (seat === 0) {
-                role = 'GK';
-            } else if (seat >= 1 && seat <= 4) {
-                role = 'Outfield';
+            if (excludeGK) {
+                // If excluding GK, seats 0-3 are Outfield
+                if (seat < 4) {
+                    role = 'Outfield';
+                }
+            } else {
+                // Standard: 0 is GK, 1-4 is Outfield
+                if (seat === 0) {
+                    role = 'GK';
+                } else if (seat >= 1 && seat <= 4) {
+                    role = 'Outfield';
+                }
             }
 
             assignments[player.id] = role;

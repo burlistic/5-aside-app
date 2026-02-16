@@ -16,7 +16,33 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
     const [halfTimeRemaining, setHalfTimeRemaining] = useState(halfTimeDurationSeconds);
     const [hasHadHalfTime, setHasHadHalfTime] = useState(false);
 
-    const schedule = useMemo(() => calculateSchedule(players, totalTimeInMinutes), [players, totalTimeInMinutes]);
+    // Goalkeeper State
+    // Initialize from props. If a player has isFixedGk, use them.
+    const [fixedGkId, setFixedGkId] = useState(() => players.find(p => p.isFixedGk)?.id || null);
+
+    const schedule = useMemo(() => {
+        let rotationPlayers = players;
+        let excludeGK = false;
+
+        if (fixedGkId) {
+            rotationPlayers = players.filter(p => p.id !== fixedGkId);
+            excludeGK = true;
+        }
+
+        const baseSchedule = calculateSchedule(rotationPlayers, totalTimeInMinutes, excludeGK);
+
+        if (fixedGkId) {
+            // Inject fixed GK into every shift
+            return baseSchedule.map(shift => ({
+                ...shift,
+                assignments: {
+                    ...shift.assignments,
+                    [fixedGkId]: 'GK'
+                }
+            }));
+        }
+        return baseSchedule;
+    }, [players, totalTimeInMinutes, fixedGkId]);
 
     useEffect(() => {
         let interval;
@@ -70,7 +96,13 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
 
     const timeUntilNextShift = currentShift ? currentShift.endTime - timeElapsed : 0;
 
-    const isSubstitutionSoon = timeUntilNextShift <= 30 && timeUntilNextShift > 0 && !isHalfTime;
+    // Check if there is an ACTUAL substitution (role change)
+    const hasRoleChange = useMemo(() => {
+        if (!currentShift || !nextShift) return false;
+        return players.some(p => currentShift.assignments[p.id] !== nextShift.assignments[p.id]);
+    }, [currentShift, nextShift, players]);
+
+    const isSubstitutionSoon = timeUntilNextShift <= 30 && timeUntilNextShift > 0 && !isHalfTime && hasRoleChange;
 
     // Sorting players for display
     const getPlayersByRole = (role) => {
@@ -86,15 +118,38 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
         <div>
             <div className="card timer-container">
                 {isHalfTime && (
-                    <div style={{
-                        color: 'var(--accent-timer)',
-                        fontWeight: 'bold',
-                        fontSize: '1.2rem',
-                        marginBottom: '0.5rem',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.1em'
-                    }}>
-                        ⏸️ Half Time Break
+                    <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{
+                            color: 'var(--accent-timer)',
+                            fontWeight: 'bold',
+                            fontSize: '1.2rem',
+                            marginBottom: '0.5rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em'
+                        }}>
+                            ⏸️ Half Time Break
+                        </div>
+
+                        <label style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                            Nominate Fixed GK (Rest of Game)
+                        </label>
+                        <select
+                            value={fixedGkId || ""}
+                            onChange={(e) => setFixedGkId(e.target.value || null)}
+                            style={{
+                                padding: '0.5rem',
+                                borderRadius: '0.375rem',
+                                border: '1px solid #334155',
+                                background: '#1e293b',
+                                color: 'white',
+                                fontSize: '0.9rem'
+                            }}
+                        >
+                            <option value="">-- Rotating GK --</option>
+                            {players.map(p => (
+                                <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                        </select>
                     </div>
                 )}
 
@@ -235,16 +290,22 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
                     </h3>
                     <div style={{ padding: '0.5rem', color: 'var(--text-secondary)' }}>
                         {nextShift ? (
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span>Next GK: <strong style={{ color: 'var(--text-primary)' }}>{players.find(p => nextShift.assignments[p.id] === 'GK')?.name}</strong></span>
-                                {!isHalfTime && (
-                                    isSubstitutionSoon ? (
-                                        <div className="status-badge sub-in">↑ GK</div>
-                                    ) : (
-                                        <span style={{ fontSize: '0.875rem', color: 'var(--accent-timer)' }}>Enters at {totalTimeInMinutes === 1 ? `${totalTimeInSeconds - nextShift.startTime}s` : formatTime(totalTimeInSeconds - nextShift.startTime)}</span>
-                                    )
-                                )}
-                            </div>
+                            !hasRoleChange ? (
+                                <div style={{ fontSize: '0.875rem', textAlign: 'center', fontStyle: 'italic' }}>
+                                    No substitutions. Opportunity to rotate or confirm keeper at half time.
+                                </div>
+                            ) : (
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span>Next GK: <strong style={{ color: 'var(--text-primary)' }}>{players.find(p => nextShift.assignments[p.id] === 'GK')?.name}</strong></span>
+                                    {!isHalfTime && (
+                                        isSubstitutionSoon ? (
+                                            <div className="status-badge sub-in">↑ GK</div>
+                                        ) : (
+                                            <span style={{ fontSize: '0.875rem', color: 'var(--accent-timer)' }}>Enters at {totalTimeInMinutes === 1 ? `${totalTimeInSeconds - nextShift.startTime}s` : formatTime(totalTimeInSeconds - nextShift.startTime)}</span>
+                                        )
+                                    )}
+                                </div>
+                            )
                         ) : (
                             <span>No more rotations</span>
                         )}
@@ -252,9 +313,11 @@ export default function GameScreen({ players, onReset, onNextMatch }) {
                 </div>
             )}
 
-            <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.5, fontSize: '0.8rem' }}>
-                Shift {currentShift ? currentShift.shiftIndex : '-'} / {schedule.length} • Duration: {formatTime(schedule[0].endTime - schedule[0].startTime)}
-            </div>
+            {(!fixedGkId || bench.length > 0) && (
+                <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.5, fontSize: '0.8rem' }}>
+                    Shift {currentShift ? currentShift.shiftIndex : '-'} / {schedule.length} • Duration: {formatTime(schedule[0].endTime - schedule[0].startTime)}
+                </div>
+            )}
         </div>
     );
 }

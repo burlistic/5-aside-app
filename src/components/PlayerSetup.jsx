@@ -25,7 +25,7 @@ export default function PlayerSetup({ onStartGame, initialPlayers = [] }) {
             return;
         }
 
-        setPlayers([...players, { id: crypto.randomUUID(), name: trimmed }]);
+        setPlayers([...players, { id: crypto.randomUUID(), name: trimmed, isFixedGk: false }]);
         setName('');
         setError('');
         inputRef.current?.focus();
@@ -33,6 +33,13 @@ export default function PlayerSetup({ onStartGame, initialPlayers = [] }) {
 
     const removePlayer = (id) => {
         setPlayers(players.filter(p => p.id !== id));
+    };
+
+    const toggleFixedGk = (id) => {
+        setPlayers(players.map(p => ({
+            ...p,
+            isFixedGk: p.id === id ? !p.isFixedGk : false // Only allow one GK, uncheck others
+        })));
     };
 
     const handleStart = () => {
@@ -48,7 +55,7 @@ export default function PlayerSetup({ onStartGame, initialPlayers = [] }) {
             <div className="card">
                 <h2>Team Setup</h2>
                 <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                    Add 5-10 players to generate the rotation schedule.
+                    Add 5-10 players. Select a fixed GK (optional).
                 </p>
 
                 <form onSubmit={addPlayer}>
@@ -72,10 +79,19 @@ export default function PlayerSetup({ onStartGame, initialPlayers = [] }) {
                 <div className="player-list">
                     {players.map((p, idx) => (
                         <div key={p.id} className="player-item">
-                            <span>
-                                <span style={{ color: 'var(--text-secondary)', marginRight: '1rem' }}>#{idx + 1}</span>
-                                {p.name}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ color: 'var(--text-secondary)', marginRight: '1rem', width: '20px' }}>#{idx + 1}</span>
+                                <span style={{ marginRight: '1rem' }}>{p.name}</span>
+                                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '0.8rem', color: p.isFixedGk ? 'var(--accent-timer)' : 'var(--text-secondary)' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={!!p.isFixedGk}
+                                        onChange={() => toggleFixedGk(p.id)}
+                                        style={{ marginRight: '0.4rem' }}
+                                    />
+                                    {p.isFixedGk ? "Fixed GK" : "GK?"}
+                                </label>
+                            </div>
                             <button
                                 onClick={() => removePlayer(p.id)}
                                 style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem', color: 'var(--danger)', background: 'transparent' }}
