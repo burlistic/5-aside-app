@@ -4,9 +4,9 @@ import { calculateSchedule, formatTime } from '../utils/rotation';
 export default function GameScreen({ players, onReset, onNextMatch }) {
     // Game state
     const urlParams = new URLSearchParams(window.location.search);
-    const totalTimeInMinutes = parseInt(urlParams.get('time')) || 18; // Default to 18 min if not specified
+    const totalTimeInMinutes = parseInt(urlParams.get('time')) || 36; // Default to 18 min if not specified
     const totalTimeInSeconds = totalTimeInMinutes * 60;
-    const halfTimeDurationSeconds = 10; // 2 minutes
+    const halfTimeDurationSeconds = 120; // 2 minutes
 
     const [timeRemaining, setTimeRemaining] = useState(totalTimeInSeconds);
     const [isPlaying, setIsPlaying] = useState(false);
